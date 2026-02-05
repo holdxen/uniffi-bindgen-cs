@@ -5,7 +5,7 @@
 pub mod gen_cs;
 
 use anyhow::Result;
-use camino::Utf8PathBuf;
+use camino::{Utf8Path, Utf8PathBuf};
 use clap::Parser;
 use fs_err::File;
 pub use gen_cs::generate_bindings;
@@ -135,6 +135,35 @@ impl uniffi_bindgen::BindingGenerator for BindingGenerator {
         // }
         Ok(())
     }
+}
+
+
+pub fn generate_from_library(
+    library_path: &Utf8Path, 
+    crate_name: Option<String>, 
+    try_format_code: bool, 
+    config: Option<&Utf8Path>,
+    out_dir: &Utf8Path, 
+) -> Result<()> {
+    let config_supplier = {
+        use uniffi_bindgen::cargo_metadata::CrateConfigSupplier;
+        let cmd = ::cargo_metadata::MetadataCommand::new();
+        let metadata = cmd.exec().unwrap();
+        CrateConfigSupplier::from(metadata)
+    };
+
+    uniffi_bindgen::library_mode::generate_bindings(
+        library_path,
+        crate_name,
+        &BindingGenerator {
+            try_format_code,
+        },
+        &config_supplier,
+        config,
+        out_dir,
+        try_format_code,
+    )
+    .map(|_| ())
 }
 
 pub fn main() -> Result<()> {
