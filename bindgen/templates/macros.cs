@@ -19,6 +19,17 @@
 )
 {%- endmacro -%}
 
+{%- macro to_ffi_call_this(func, thisPtr) -%}
+    {%- match func.throws_type() %}
+    {%- when Some with (e) %}
+        _UniffiHelpers.RustCallWithError({{ e|error_converter_name}}.INSTANCE,
+    {%- else %}
+        _UniffiHelpers.RustCall(
+    {%- endmatch %} (ref UniffiRustCallStatus _status) =>
+        _UniFFILib.{{ func.ffi_func().name() }}({{- thisPtr|lower_fn }}(this),{% call lower_arg_list(func) -%}{% if func.arguments().len() > 0 %},{% endif %} ref _status)
+)
+{%- endmacro -%}
+
 {%- macro to_ffi_call_with_prefix(prefix, func) %}
     {%- match func.throws_type() %}
     {%- when Some with (e) %}
