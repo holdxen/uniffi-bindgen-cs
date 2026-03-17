@@ -4,6 +4,8 @@
 
 {%- let rec = ci.get_record_definition(name).unwrap() %}
 {%- let (ordered_fields, is_reordered) = rec.fields()|order_fields %}
+{%- let rec_ffi_converter = rec|ffi_converter_name %}
+{%- let self_lower_prefix = format!("{}.INSTANCE.Lower(this)", rec_ffi_converter) %}
 
 {%- call cs::docstring(rec, 0) %}
 {%- for field in ordered_fields %}
@@ -43,32 +45,12 @@
     }
     {%- endif %}
 
+    {%- if !rec.methods().is_empty() %}
+    {%- call cs::value_type_methods(rec.methods(), self_lower_prefix) %}
+    {%- endif %}
 
-
-    {% for meth in rec.methods() -%}
-    {%- call cs::docstring(meth, 4) %}
-    {%- call cs::method_throws_annotation(meth.throws_type()) %}
-    {%- if meth.is_async() %}
-    public async {% call cs::return_type(meth) %} {{ meth.name()|fn_name }}({%- call cs::arg_list_decl(meth) -%}) {
-        {%- call cs::async_call(meth, true) %}
-    }
-    {%- else %}
-
-    {%- match meth.return_type() -%}
-    {%- when Some with (return_type) %}
-        public {{ return_type|type_name(ci) }} {{ meth.name()|fn_name }}({%- call cs::arg_list_decl(meth) -%}) {
-            return {{ return_type|lift_fn }}({% call cs::to_ffi_call_this(meth, rec) %});
-        }
-    {% when None %}
-        public void {{ meth.name()|fn_name }}({% call cs::arg_list_decl(meth) %}) {
-            {% call cs::to_ffi_call_this(meth, rec) %};
-        }
-    {% endmatch %}
-    {% endif %}
-    {% endfor %}
-
-
-
+    {%- let uniffi_trait_methods = rec.uniffi_trait_methods() %}
+    {%- call cs::value_type_uniffi_traits(uniffi_trait_methods, self_lower_prefix) %}
 }
 
 class {{ rec|ffi_converter_name }}: FfiConverterRustBuffer<{{ type_name }}> {
