@@ -146,10 +146,12 @@ pub fn generate_from_library(
     out_dir: &Utf8Path, 
 ) -> Result<()> {
     let config_supplier = {
+        // use uniffi_bindgen::cargo_metadata::CrateConfigSupplier;
+        // let cmd = ::cargo_metadata::MetadataCommand::new();
+        // let metadata = cmd.exec().unwrap();
+        // CrateConfigSupplier::from(metadata)
         use uniffi_bindgen::cargo_metadata::CrateConfigSupplier;
-        let cmd = ::cargo_metadata::MetadataCommand::new();
-        let metadata = cmd.exec().unwrap();
-        CrateConfigSupplier::from(metadata)
+        CrateConfigSupplier::from_cargo_metadata_command(false)?
     };
 
     uniffi_bindgen::library_mode::generate_bindings(
