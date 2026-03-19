@@ -51,7 +51,7 @@ class {{ ffi_converter_name }} : FfiConverterRustBuffer<{{ type_name }}>, CallSt
             case {{ loop.index }}: return new {{ type_name }}.{{ variant|error_variant_name }}({{ Type::String.borrow()|read_fn }}(stream));
             {%- endfor %}
             default:
-                throw new InternalException(String.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Read()", value));
+                throw new InternalException(string.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Read()", value));
         }
     }
 
@@ -67,7 +67,7 @@ class {{ ffi_converter_name }} : FfiConverterRustBuffer<{{ type_name }}>, CallSt
                 break;
             {%- endfor %}
             default:
-                throw new InternalException(String.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Write()", value));
+                throw new InternalException(string.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Write()", value));
         }
     }
 }
@@ -137,7 +137,7 @@ class {{ ffi_converter_name }} : FfiConverterRustBuffer<{{ type_name }}>, CallSt
                 break;
             {%- endfor %}
             default:
-                throw new InternalException(String.Format("invalid error value '{0}' in {{ type_name }}.Dispose()", this));
+                throw new InternalException(string.Format("invalid error value '{0}' in {{ type_name }}.Dispose()", this));
         }
     }
     {% endif %}
@@ -175,7 +175,7 @@ class {{ ffi_converter_name }} : FfiConverterRustBuffer<{{ type_name }}>, CallSt
                     {%- endfor %});
             {%- endfor %}
             default:
-                throw new InternalException(String.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Read()", value));
+                throw new InternalException(string.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Read()", value));
         }
     }
 
@@ -191,7 +191,7 @@ class {{ ffi_converter_name }} : FfiConverterRustBuffer<{{ type_name }}>, CallSt
                     {%- endfor %};
             {%- endfor %}
             default:
-                throw new InternalException(String.Format("invalid error value '{0}' in {{ ffi_converter_name }}.AllocationSize()", value));
+                throw new InternalException(string.Format("invalid error value '{0}' in {{ ffi_converter_name }}.AllocationSize()", value));
         }
     }
 
@@ -207,7 +207,7 @@ class {{ ffi_converter_name }} : FfiConverterRustBuffer<{{ type_name }}>, CallSt
                 break;
             {%- endfor %}
             default:
-                throw new InternalException(String.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Write()", value));
+                throw new InternalException(string.Format("invalid error value '{0}' in {{ ffi_converter_name }}.Write()", value));
         }
     }
 }
