@@ -131,14 +131,14 @@ class _UniffiHelpers {
 }
 
 static class FFIObjectUtil {
-    public static void DisposeAll(params Object?[] list) {
+    public static void DisposeAll(params object?[] list) {
         Dispose(list);
     }
 
     // Dispose is implemented by recursive type inspection at runtime. This is because
     // generating correct Dispose calls for recursive complex types, e.g. List<List<int>>
     // is quite cumbersome.
-   private static void Dispose(Object? obj) {
+   private static void Dispose(object? obj) {
          if (obj == null) {
              return;
          }
