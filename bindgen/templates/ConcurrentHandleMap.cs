@@ -20,7 +20,7 @@ class ConcurrentHandleMap<T> where T: notnull {
         return handle;
     }
 
-    public bool TryGet(ulong handle, [NotNullWhen(true)] out T? result) {
+    public bool TryGet(ulong handle, [MaybeNullWhen(false)] out T result) {
         return _map.TryGetValue(handle, out result);
     }
 
@@ -36,7 +36,7 @@ class ConcurrentHandleMap<T> where T: notnull {
         return _map.TryRemove(handle, out _);
     }
 
-    public bool Remove(ulong handle, [NotNullWhen(true)] out T? result) {
+    public bool Remove(ulong handle, [MaybeNullWhen(false)] out T result) {
         return _map.TryRemove(handle, out result);
     }
 }
